@@ -39,7 +39,18 @@ def download():
     tmpdir = tempfile.mkdtemp()
 
     try:
-        info_opts = {"quiet": True, "skip_download": True}
+        info_opts = {
+            "quiet": True,
+            "skip_download": True,
+            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "referer": "https://www.youtube.com/",
+            "headers": {
+                "Accept-Language": "en-US,en;q=0.9",
+                "Origin": "https://www.youtube.com",
+            },
+            "geo_bypass": True,
+            "cookiefile": None,
+        }
         with yt_dlp.YoutubeDL(info_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             raw_title = info.get("title", "descarga")
@@ -47,14 +58,26 @@ def download():
     except Exception:
         shutil.rmtree(tmpdir, ignore_errors=True)
         return {
-            "detail": "No pude revisar ese video. A veces YouTube no me deja entrar, o el link está caido. Intenta con otro."
+            "detail": "YouTube no me deja entrar desde el servidor. A veces bloquea las nubes. Probá con otro video o usá la computadora de casa."
         }, 400
 
     outtmpl = os.path.join(tmpdir, f"{title}.%(ext)s")
 
     try:
+        common_opts = {
+            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "referer": "https://www.youtube.com/",
+            "headers": {
+                "Accept-Language": "en-US,en;q=0.9",
+                "Origin": "https://www.youtube.com",
+            },
+            "geo_bypass": True,
+            "cookiefile": None,
+        }
+
         if fmt == "mp3":
             ydl_opts = {
+                **common_opts,
                 "format": "bestaudio/best",
                 "outtmpl": outtmpl,
                 "postprocessors": [
@@ -70,6 +93,7 @@ def download():
             mimetype = "audio/mpeg"
         else:
             ydl_opts = {
+                **common_opts,
                 "format": "best[ext=mp4]/best",
                 "outtmpl": outtmpl,
                 "quiet": True,
