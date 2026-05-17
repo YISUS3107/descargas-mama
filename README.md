@@ -17,7 +17,9 @@ Diseñada con estilo **Premium Dark Mode** (inspirado en Spotify / Netflix) y pe
 
 ## Cómo subirlo gratis a Internet (paso a paso)
 
-Para que mamá pueda usarlo desde cualquier lugar, sin tener tu PC prendida.
+Para que mamá pueda usarlo desde cualquier lugar, sin tener tu PC prendida, vamos a usar **Railway** (gratis y compatible con FFmpeg para MP3 real).
+
+> ⚠️ **Importante:** Railway te pide una tarjeta de crédito o débito para verificar la cuenta. **No te cobran nada** en el plan gratuito, pero la piden para evitar abuso. Si no tenés tarjeta, volvé a la Opción Render (M4A sin MP3).
 
 ### Paso 1: Crear cuenta en GitHub
 
@@ -30,8 +32,7 @@ Para que mamá pueda usarlo desde cualquier lugar, sin tener tu PC prendida.
 1. Andá a [https://github.com/new](https://github.com/new).
 2. En **Repository name** escribí: `descargas-mama`.
 3. Dejá todo como está y tocá el botón verde **Create repository**.
-4. Ahora vas a ver una pantalla con instrucciones. Buscá la que dice **"…or push an existing repository from the command line"**.
-5. Abrí la terminal (PowerShell o CMD) **dentro de la carpeta del proyecto** (`mama-youtube-downloader`) y ejecutá estos comandos uno por uno:
+4. Abrí la terminal (PowerShell o CMD) **dentro de la carpeta del proyecto** (`mama-youtube-downloader`) y ejecutá estos comandos uno por uno:
 
 ```bash
 git init
@@ -48,43 +49,46 @@ Si te pide usuario y contraseña, usá tu nombre de usuario de GitHub y como con
 
 ---
 
-### Paso 3: Crear cuenta en Render
+### Paso 3: Crear cuenta en Railway
 
-1. Andá a [https://render.com](https://render.com).
-2. Tocá **Get Started for Free** y registrate con tu cuenta de **GitHub** (es la opción más fácil).
-3. Seguí los pasos de verificación (te van a pedir un número de teléfono para un SMS).
+1. Andá a [https://railway.com](https://railway.com).
+2. Tocá **Start a New Project** o **Get Started**.
+3. Registrate con tu cuenta de **GitHub** (es la opción más fácil).
+4. Te va a pedir verificación con número de teléfono y una tarjeta de crédito/débito (no te cobran, es solo verificación).
 
 ---
 
-### Paso 4: Crear el servicio en Render
+### Paso 4: Crear el servicio en Railway
 
-1. En el dashboard de Render, tocá el botón **New +** (arriba a la derecha).
-2. Seleccioná **Web Service**.
-3. Vas a ver tus repositorios de GitHub. Buscá y elegí **`descargas-mama`**.
-4. Completá los datos así:
-   - **Name:** `descargas-mama` (o el nombre que quieras).
-   - **Environment:** `Python 3`.
-   - **Region:** Elegí la más cercana (Virginia está bien para Latinoamérica).
-   - **Branch:** `main`.
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `gunicorn app:app --bind 0.0.0.0:$PORT`
-5. En **Instance Type** asegurate de elegir **Free**.
-6. Tocá **Create Web Service**.
+1. En el dashboard de Railway, tocá **New Project**.
+2. Seleccioná **Deploy from GitHub repo**.
+3. Buscá y elegí tu repositorio **`descargas-mama`**.
+4. Railway va a detectar automáticamente el archivo `nixpacks.toml` y va a instalar **FFmpeg + Python + dependencias** solo.
+5. Esperá unos **2 a 3 minutos** mientras construye y despliega.
+6. Cuando termine, vas a ver una URL tipo:
+
+```
+https://descargas-mama.up.railway.app
+```
+
+¡Esa es la dirección de la página! Copiala, probala en tu navegador y después pasasela a mamá.
+
+> **¿No funciona?** Asegurate de que Railway esté usando el builder **Nixpacks** (o **Railpack**). Podés verificarlo en **Settings > Builder** del servicio.
 
 ---
 
 ### Paso 5: Esperar el deploy
 
-Render se va a poner a trabajar. Vas a ver una ventana con logs (texto corriendo). Esperá unos **2 a 3 minutos** hasta que diga algo como:
+Railway se va a poner a trabajar. Vas a ver una ventana con logs (texto corriendo). Esperá unos **2 a 3 minutos** hasta que diga algo como:
 
 ```
-Your service is live 🎉
+Deploy succeeded
 ```
 
 Arriba vas a ver una URL del tipo:
 
 ```
-https://descargas-mama.onrender.com
+https://descargas-mama.up.railway.app
 ```
 
 ¡Esa es la dirección de la página! Copiala, probala en tu navegador y después pasasela a mamá.
@@ -113,7 +117,7 @@ Ahora aparece un ícono lindo junto a WhatsApp, como una app más.
 
 | Problema | Solución |
 |---|---|
-| En Render tarda la primera vez | Es normal en el plan gratuito. El servidor se "duerme" tras 15 minutos sin uso. La primera descarga del día tarda unos **30-60 segundos** en "despertar". Después va rápido. Decile a mamá: *"La primera vez tarda un poquito, como cuando calentamos la pava"*. |
+| En Railway tarda la primera vez | Es normal en el plan gratuito. El servidor se "duerme" tras un rato sin uso. La primera descarga del día tarda unos **20-40 segundos** en "despertar". Después va rápido. Decile a mamá: *"La primera vez tarda un poquito, como cuando calentamos la pava"*. |
 | "No pude revisar ese video" | El link está roto, es privado o YouTube cambió algo. Probá con otro. |
 | "Este video tiene protección" | YouTube bloquea algunos videos con copyright muy estricto (música oficial de grandes sellos, TV). Probá con otro. |
 | La descarga tarda mucho | Los videos muy largos o en alta calidad pesan más. Sé paciente. |

@@ -7,19 +7,7 @@ import shutil
 app = Flask(__name__)
 
 
-import subprocess
-
-def ffmpeg_available() -> bool:
-    try:
-        subprocess.run(
-            ["ffmpeg", "-version"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=True,
-        )
-        return True
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        return False
+def is_valid_youtube(url: str) -> bool:
     return "youtube.com" in url or "youtu.be" in url
 
 
@@ -51,7 +39,6 @@ def download():
     tmpdir = tempfile.mkdtemp()
 
     try:
-        # Extraemos info para validar y tener un lindo nombre de archivo
         info_opts = {"quiet": True, "skip_download": True}
         with yt_dlp.YoutubeDL(info_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -67,31 +54,20 @@ def download():
 
     try:
         if fmt == "mp3":
-            if ffmpeg_available():
-                ydl_opts = {
-                    "format": "bestaudio/best",
-                    "outtmpl": outtmpl,
-                    "postprocessors": [
-                        {
-                            "key": "FFmpegExtractAudio",
-                            "preferredcodec": "mp3",
-                            "preferredquality": "192",
-                        }
-                    ],
-                    "quiet": True,
-                }
-                ext = "mp3"
-                mimetype = "audio/mpeg"
-            else:
-                # Sin FFmpeg: descargamos el audio nativo (m4a/webm)
-                # que cualquier celular reproduce sin problemas
-                ydl_opts = {
-                    "format": "bestaudio/best",
-                    "outtmpl": outtmpl,
-                    "quiet": True,
-                }
-                ext = "m4a"
-                mimetype = "audio/mp4"
+            ydl_opts = {
+                "format": "bestaudio/best",
+                "outtmpl": outtmpl,
+                "postprocessors": [
+                    {
+                        "key": "FFmpegExtractAudio",
+                        "preferredcodec": "mp3",
+                        "preferredquality": "192",
+                    }
+                ],
+                "quiet": True,
+            }
+            ext = "mp3"
+            mimetype = "audio/mpeg"
         else:
             ydl_opts = {
                 "format": "best[ext=mp4]/best",
@@ -111,7 +87,6 @@ def download():
         file_path = os.path.join(tmpdir, files[0])
         filename = f"{title}.{ext}"
 
-        # Generador que lee el archivo y luego limpia la carpeta temporal
         def iterfile():
             with open(file_path, "rb") as f:
                 yield from f
