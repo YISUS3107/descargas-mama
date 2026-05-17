@@ -66,7 +66,7 @@ Si te pide usuario y contraseña, usá tu nombre de usuario de GitHub y como con
    - **Environment:** `Python 3`.
    - **Region:** Elegí la más cercana (Virginia está bien para Latinoamérica).
    - **Branch:** `main`.
-   - **Build Command:** `bash build.sh`
+   - **Build Command:** `pip install -r requirements.txt`
    - **Start Command:** `gunicorn app:app --bind 0.0.0.0:$PORT`
 5. En **Instance Type** asegurate de elegir **Free**.
 6. Tocá **Create Web Service**.

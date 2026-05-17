@@ -7,7 +7,19 @@ import shutil
 app = Flask(__name__)
 
 
-def is_valid_youtube(url: str) -> bool:
+import subprocess
+
+def ffmpeg_available() -> bool:
+    try:
+        subprocess.run(
+            ["ffmpeg", "-version"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
+        )
+        return True
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return False
     return "youtube.com" in url or "youtu.be" in url
 
 
@@ -55,20 +67,31 @@ def download():
 
     try:
         if fmt == "mp3":
-            ydl_opts = {
-                "format": "bestaudio/best",
-                "outtmpl": outtmpl,
-                "postprocessors": [
-                    {
-                        "key": "FFmpegExtractAudio",
-                        "preferredcodec": "mp3",
-                        "preferredquality": "192",
-                    }
-                ],
-                "quiet": True,
-            }
-            ext = "mp3"
-            mimetype = "audio/mpeg"
+            if ffmpeg_available():
+                ydl_opts = {
+                    "format": "bestaudio/best",
+                    "outtmpl": outtmpl,
+                    "postprocessors": [
+                        {
+                            "key": "FFmpegExtractAudio",
+                            "preferredcodec": "mp3",
+                            "preferredquality": "192",
+                        }
+                    ],
+                    "quiet": True,
+                }
+                ext = "mp3"
+                mimetype = "audio/mpeg"
+            else:
+                # Sin FFmpeg: descargamos el audio nativo (m4a/webm)
+                # que cualquier celular reproduce sin problemas
+                ydl_opts = {
+                    "format": "bestaudio/best",
+                    "outtmpl": outtmpl,
+                    "quiet": True,
+                }
+                ext = "m4a"
+                mimetype = "audio/mp4"
         else:
             ydl_opts = {
                 "format": "best[ext=mp4]/best",
