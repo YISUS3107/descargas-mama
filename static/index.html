@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Descargas para Mamá</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff8a65">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo" aria-hidden="true">🎵</div>
+      <h1>Descargar de YouTube</h1>
+      <p class="subtitle">Pega el link y toca un botón. Eso es todo.</p>
+    </header>
+
+    <main>
+      <label for="urlInput" class="sr-only">Link de YouTube</label>
+      <input
+        type="url"
+        id="urlInput"
+        placeholder="Pega aquí el link de YouTube"
+        inputmode="url"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+      >
+
+      <div class="buttons">
+        <button id="btnMp3" class="btn btn-music" aria-label="Bajar solo la música en MP3">
+          🎵 Bajar Música
+        </button>
+        <button id="btnMp4" class="btn btn-video" aria-label="Bajar el video completo en MP4">
+          🎬 Bajar Video
+        </button>
+      </div>
+
+      <div id="status" class="status hidden">
+        <div class="spinner" aria-hidden="true"></div>
+        <p id="statusText">Un momentito, estoy trabajando en ello...</p>
+      </div>
+
+      <div id="error" class="error hidden" role="alert">
+        <p id="errorText"></p>
+      </div>
+    </main>
+
+    <footer>
+      <p class="hint">Hecho con cariño para mamá ❤️</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
